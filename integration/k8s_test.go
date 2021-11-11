@@ -42,6 +42,9 @@ func (s *K8sSuite) SetUpSuite(c *check.C) {
 
 	err = os.Setenv("KUBECONFIG", abs)
 	c.Assert(err, checker.IsNil)
+
+	// allow time for k8s resources to be created
+	time.Sleep(1 * time.Minute)
 }
 
 func (s *K8sSuite) TearDownSuite(c *check.C) {

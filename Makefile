@@ -16,7 +16,7 @@ REPONAME := $(shell echo $(REPO) | tr '[:upper:]' '[:lower:]')
 TRAEFIK_IMAGE := $(if $(REPONAME),$(REPONAME),"traefik/traefik")
 
 INTEGRATION_OPTS := $(if $(MAKE_DOCKER_HOST),-e "DOCKER_HOST=$(MAKE_DOCKER_HOST)", --name=traefik --rm \
--v "/var/run/docker.sock:/var/run/docker.sock" -v test-data:/test/data -v test-config:/test/config -v `pwd`/integration/fixtures/k8s:/test/manifests \
+-v "/var/run/docker.sock:/var/run/docker.sock" -v test-data:/test/data -v test-config:/test/config -v `pwd`/integration/fixtures/k8s:/test/manifests  \
 -e KUBECONFIG="/test/config/kubeconfig.yaml")
 
 DOCKER_BUILD_ARGS := $(if $(DOCKER_VERSION), "--build-arg=DOCKER_VERSION=$(DOCKER_VERSION)",)

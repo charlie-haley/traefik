@@ -70,7 +70,7 @@ func Test(t *testing.T) {
 	check.Suite(&WebsocketSuite{})
 	check.Suite(&ZookeeperSuite{})*/
 
-	check.Suite(&K8sSuite{})
+	//check.Suite(&K8sSuite{})
 	check.Suite(&ProxyProtocolSuite{})
 	check.Suite(&TCPSuite{})
 
