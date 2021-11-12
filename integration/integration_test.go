@@ -71,7 +71,7 @@ func Test(t *testing.T) {
 	check.Suite(&ZookeeperSuite{})*/
 
 	//check.Suite(&K8sSuite{})
-	check.Suite(&ProxyProtocolSuite{})
+	//check.Suite(&ProxyProtocolSuite{})
 	check.Suite(&TCPSuite{})
 
 	check.TestingT(t)
