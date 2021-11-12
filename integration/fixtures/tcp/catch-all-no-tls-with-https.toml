@@ -40,4 +40,4 @@
   [http.services]
     [http.services.whoami.loadBalancer]
       [[http.services.whoami.loadBalancer.servers]]
-        url = "http://whoami:8080"
+        url = "http://whoami:80"

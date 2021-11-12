@@ -37,7 +37,7 @@
   [http.services]
     [http.services.whoami.loadBalancer]
       [[http.services.whoami.loadBalancer.servers]]
-        url = "http://whoami:8080"
+        url = "http://whoami:80"
 [tcp]
   [tcp.routers]
     [tcp.routers.to-whoami-a]

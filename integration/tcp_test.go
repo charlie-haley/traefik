@@ -5,9 +5,7 @@ import (
 	"crypto/tls"
 	"net"
 	"net/http"
-	"net/http/httptest"
 	"os"
-	"strings"
 	"time"
 
 	composeapi "github.com/docker/compose/v2/pkg/api"
@@ -74,7 +72,7 @@ func (s *TCPSuite) TestMixed(c *check.C) {
 	c.Assert(err, checker.IsNil)
 }
 
-func (s *TCPSuite) TestTLSOptions(c *check.C) {
+/*func (s *TCPSuite) TestTLSOptions(c *check.C) {
 	file := s.adaptFile(c, "fixtures/tcp/multi-tls-options.toml", struct{}{})
 	defer os.Remove(file)
 
@@ -225,7 +223,7 @@ func (s *TCPSuite) TestMiddlewareWhiteList(c *check.C) {
 	out, err := guessWho("127.0.0.1:8093", "whoami-b.test", true)
 	c.Assert(err, checker.IsNil)
 	c.Assert(out, checker.Contains, "whoami-b")
-}
+}*/
 
 func welcome(addr string) (string, error) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
@@ -294,7 +292,7 @@ func guessWhoTLSMaxVersion(addr, serverName string, tlsCall bool, tlsMaxVersion 
 	return string(out[:n]), nil
 }
 
-func (s *TCPSuite) TestWRR(c *check.C) {
+/*func (s *TCPSuite) TestWRR(c *check.C) {
 	file := s.adaptFile(c, "fixtures/tcp/wrr.toml", struct{}{})
 	defer os.Remove(file)
 
@@ -324,4 +322,4 @@ func (s *TCPSuite) TestWRR(c *check.C) {
 	}
 
 	c.Assert(call, checker.DeepEquals, map[string]int{"whoami-a": 3, "whoami-b": 1})
-}
+}*/
