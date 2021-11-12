@@ -14,6 +14,8 @@ import (
 	checker "github.com/vdemeester/shakers"
 )
 
+const tcpTimeout = 5 * time.Second
+
 type TCPSuite struct{ BaseSuite }
 
 func (s *TCPSuite) SetUpSuite(c *check.C) {
@@ -72,7 +74,7 @@ func (s *TCPSuite) TestMixed(c *check.C) {
 	c.Assert(err, checker.IsNil)
 }
 
-/*func (s *TCPSuite) TestTLSOptions(c *check.C) {
+func (s *TCPSuite) TestTLSOptions(c *check.C) {
 	file := s.adaptFile(c, "fixtures/tcp/multi-tls-options.toml", struct{}{})
 	defer os.Remove(file)
 
@@ -102,7 +104,7 @@ func (s *TCPSuite) TestMixed(c *check.C) {
 	c.Assert(err.Error(), checker.Contains, "protocol version not supported")
 }
 
-func (s *TCPSuite) TestNonTLSFallback(c *check.C) {
+/*func (s *TCPSuite) TestNonTLSFallback(c *check.C) {
 	file := s.adaptFile(c, "fixtures/tcp/non-tls-fallback.toml", struct{}{})
 	defer os.Remove(file)
 
@@ -226,12 +228,8 @@ func (s *TCPSuite) TestMiddlewareWhiteList(c *check.C) {
 }*/
 
 func welcome(addr string) (string, error) {
-	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
-	if err != nil {
-		return "", err
-	}
-
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	d := net.Dialer{Timeout: tcpTimeout}
+	conn, err := d.Dial("tcp", addr)
 	if err != nil {
 		return "", err
 	}
@@ -255,19 +253,19 @@ func guessWhoTLSMaxVersion(addr, serverName string, tlsCall bool, tlsMaxVersion 
 	var err error
 
 	if tlsCall {
-		conn, err = tls.Dial("tcp", addr, &tls.Config{
-			ServerName:         serverName,
-			InsecureSkipVerify: true,
-			MinVersion:         0,
-			MaxVersion:         tlsMaxVersion,
-		})
-	} else {
-		tcpAddr, err2 := net.ResolveTCPAddr("tcp", addr)
-		if err2 != nil {
-			return "", err2
+		d := tls.Dialer{
+			NetDialer: &net.Dialer{Timeout: tcpTimeout},
+			Config: &tls.Config{
+				ServerName:         serverName,
+				InsecureSkipVerify: true,
+				MinVersion:         0,
+				MaxVersion:         tlsMaxVersion,
+			},
 		}
-
-		conn, err = net.DialTCP("tcp", nil, tcpAddr)
+		conn, err = d.Dial("tcp", addr)
+	} else {
+		d := net.Dialer{Timeout: tcpTimeout}
+		conn, err = d.Dial("tcp", addr)
 		if err != nil {
 			return "", err
 		}
