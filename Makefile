@@ -106,7 +106,7 @@ test-volumes:
 ## Run the integration tests
 test-integration: $(PRE_TARGET) binary test-network test-volumes
 
-	$(if $(PRE_TARGET),$(DOCKER_RUN_TRAEFIK_TESTNET)) /bin/bash -c "cp -a /test/manifests/. /test/data; ./script/make.sh test-integration;true" 
+	$(if $(PRE_TARGET),$(DOCKER_RUN_TRAEFIK_TESTNET)) /bin/bash -c "cp -a /test/manifests/. /test/data; cp /go/src/github.com/traefik/traefik/integration/resources/haproxy/haproxy.cfg /test/config; ./script/make.sh test-integration;true"
 	docker network rm test-net || echo ""
 	docker volume rm test-data || echo ""
 	docker volume rm test-config || echo ""
