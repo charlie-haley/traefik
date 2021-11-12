@@ -5,7 +5,9 @@ import (
 	"crypto/tls"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"os"
+	"strings"
 	"time"
 
 	composeapi "github.com/docker/compose/v2/pkg/api"
@@ -104,7 +106,7 @@ func (s *TCPSuite) TestTLSOptions(c *check.C) {
 	c.Assert(err.Error(), checker.Contains, "protocol version not supported")
 }
 
-/*func (s *TCPSuite) TestNonTLSFallback(c *check.C) {
+func (s *TCPSuite) TestNonTLSFallback(c *check.C) {
 	file := s.adaptFile(c, "fixtures/tcp/non-tls-fallback.toml", struct{}{})
 	defer os.Remove(file)
 
@@ -225,10 +227,10 @@ func (s *TCPSuite) TestMiddlewareWhiteList(c *check.C) {
 	out, err := guessWho("127.0.0.1:8093", "whoami-b.test", true)
 	c.Assert(err, checker.IsNil)
 	c.Assert(out, checker.Contains, "whoami-b")
-}*/
+}
 
 func welcome(addr string) (string, error) {
-	d := net.Dialer{Timeout: tcpTimeout}
+	d := net.Dialer{Timeout: tcpTimeout, Deadline: time.Now().Add(tcpTimeout)}
 	conn, err := d.Dial("tcp", addr)
 	if err != nil {
 		return "", err
@@ -254,7 +256,7 @@ func guessWhoTLSMaxVersion(addr, serverName string, tlsCall bool, tlsMaxVersion 
 
 	if tlsCall {
 		d := tls.Dialer{
-			NetDialer: &net.Dialer{Timeout: tcpTimeout},
+			NetDialer: &net.Dialer{Timeout: tcpTimeout, Deadline: time.Now().Add(tcpTimeout)},
 			Config: &tls.Config{
 				ServerName:         serverName,
 				InsecureSkipVerify: true,
@@ -264,7 +266,7 @@ func guessWhoTLSMaxVersion(addr, serverName string, tlsCall bool, tlsMaxVersion 
 		}
 		conn, err = d.Dial("tcp", addr)
 	} else {
-		d := net.Dialer{Timeout: tcpTimeout}
+		d := net.Dialer{Timeout: tcpTimeout, Deadline: time.Now().Add(tcpTimeout)}
 		conn, err = d.Dial("tcp", addr)
 		if err != nil {
 			return "", err
@@ -290,7 +292,7 @@ func guessWhoTLSMaxVersion(addr, serverName string, tlsCall bool, tlsMaxVersion 
 	return string(out[:n]), nil
 }
 
-/*func (s *TCPSuite) TestWRR(c *check.C) {
+func (s *TCPSuite) TestWRR(c *check.C) {
 	file := s.adaptFile(c, "fixtures/tcp/wrr.toml", struct{}{})
 	defer os.Remove(file)
 
@@ -320,4 +322,4 @@ func guessWhoTLSMaxVersion(addr, serverName string, tlsCall bool, tlsMaxVersion 
 	}
 
 	c.Assert(call, checker.DeepEquals, map[string]int{"whoami-a": 3, "whoami-b": 1})
-}*/
+}

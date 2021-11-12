@@ -39,7 +39,7 @@ func Test(t *testing.T) {
 	}
 
 	//tests launched from a container
-	/*check.Suite(&AccessLogSuite{})
+	check.Suite(&AccessLogSuite{})
 	check.Suite(&AcmeSuite{})
 	check.Suite(&EtcdSuite{})
 	check.Suite(&ConsulSuite{})
@@ -68,10 +68,10 @@ func Test(t *testing.T) {
 	check.Suite(&TracingSuite{})
 	check.Suite(&UDPSuite{})
 	check.Suite(&WebsocketSuite{})
-	check.Suite(&ZookeeperSuite{})*/
+	check.Suite(&ZookeeperSuite{})
 
-	//check.Suite(&K8sSuite{})
-	//check.Suite(&ProxyProtocolSuite{})
+	check.Suite(&K8sSuite{})
+	check.Suite(&ProxyProtocolSuite{})
 	check.Suite(&TCPSuite{})
 
 	check.TestingT(t)
